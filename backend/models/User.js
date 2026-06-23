@@ -8,6 +8,13 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
+    course: {
+      type: String,
+      required: true,
+      trim: true,
+      default: "Student",
+    },
+
     email: {
       type: String,
       required: true,

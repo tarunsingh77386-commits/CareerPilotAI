@@ -20,6 +20,39 @@ import {
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 
+const StatCard = ({ title, value, icon, color, bg }) => (
+  <div className="group bg-white border border-slate-200 rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+    <div className="flex justify-between items-start">
+      <div>
+        <p className="text-sm font-medium text-slate-500">{title}</p>
+        <h2 className={`text-3xl font-bold mt-3 ${color}`}>{value}</h2>
+      </div>
+      <div className={`w-12 h-12 rounded-xl ${bg} flex items-center justify-center`}>
+        {icon}
+      </div>
+    </div>
+  </div>
+);
+
+const Card = ({ children, className = "", id }) => (
+  <div
+    id={id}
+    className={`bg-white rounded-2xl shadow-lg hover:shadow-xl border border-slate-200 p-6 transition-all scroll-mt-28 ${className}`}
+  >
+    {children}
+  </div>
+);
+
+const SectionTitle = ({ icon, title, subtitle }) => (
+  <div className="mb-5">
+    <div className="flex items-center gap-3">
+      {icon}
+      <h2 className="text-xl font-bold text-slate-900">{title}</h2>
+    </div>
+    {subtitle && <p className="text-sm text-slate-500 mt-2">{subtitle}</p>}
+  </div>
+);
+
 function Dashboard() {
   const navigate = useNavigate();
 
@@ -50,7 +83,7 @@ function Dashboard() {
       formData.append("resume", resume);
 
       const res = await axios.post(
-        "http://localhost:5000/api/resume/analyze",
+        "https://careerpilot-backend-vax2.onrender.com/api/resume/analyze",
         formData
       );
 
@@ -79,7 +112,7 @@ function Dashboard() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/interview/questions",
+        "https://careerpilot-backend-vax2.onrender.com/api/interview/questions",
         { skills: skillsFound }
       );
 
@@ -96,7 +129,7 @@ function Dashboard() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/roadmap/generate",
+        "https://careerpilot-backend-vax2.onrender.com/api/roadmap/generate",
         { goal }
       );
 
@@ -115,7 +148,7 @@ function Dashboard() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/jobs/recommend",
+        "https://careerpilot-backend-vax2.onrender.com/api/jobs/recommend",
         { skills: skillsFound }
       );
 
@@ -134,7 +167,7 @@ function Dashboard() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/mock/generate",
+        "https://careerpilot-backend-vax2.onrender.com/api/mock/generate",
         { skills: skillsFound }
       );
 
@@ -208,36 +241,6 @@ function Dashboard() {
     doc.save("CareerPilot_Report.pdf");
   };
 
-  const StatCard = ({ title, value, icon, color, bg }) => (
-    <div className="group bg-white border border-slate-200 rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-      <div className="flex justify-between items-start">
-        <div>
-          <p className="text-sm font-medium text-slate-500">{title}</p>
-          <h2 className={`text-3xl font-bold mt-3 ${color}`}>{value}</h2>
-        </div>
-        <div className={`w-12 h-12 rounded-xl ${bg} flex items-center justify-center`}>
-          {icon}
-        </div>
-      </div>
-    </div>
-  );
-
-  const Card = ({ children, className = "" }) => (
-    <div className={`bg-white rounded-2xl shadow-lg hover:shadow-xl border border-slate-200 p-6 transition-all ${className}`}>
-      {children}
-    </div>
-  );
-
-  const SectionTitle = ({ icon, title, subtitle }) => (
-    <div className="mb-5">
-      <div className="flex items-center gap-3">
-        {icon}
-        <h2 className="text-xl font-bold text-slate-900">{title}</h2>
-      </div>
-      {subtitle && <p className="text-sm text-slate-500 mt-2">{subtitle}</p>}
-    </div>
-  );
-
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       <Navbar />
@@ -246,7 +249,10 @@ function Dashboard() {
         <Sidebar />
 
         <div className="flex-1 p-8">
-          <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-800 rounded-3xl p-8 text-white shadow-xl mb-8">
+          <div
+            id="dashboard"
+            className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-800 rounded-3xl p-8 text-white shadow-xl mb-8 scroll-mt-28"
+          >
             <div className="absolute top-0 right-0 w-72 h-72 bg-cyan-400/20 rounded-full blur-3xl"></div>
             <div className="absolute -bottom-16 left-16 w-56 h-56 bg-purple-500/20 rounded-full blur-3xl"></div>
 
@@ -255,9 +261,7 @@ function Dashboard() {
                 AI Career Analytics Dashboard
               </p>
 
-              <h1 className="text-4xl font-bold mt-3">
-                Welcome Back, Tarun
-              </h1>
+              <h1 className="text-4xl font-bold mt-3">Welcome Back, {localStorage.getItem("name") || "User"}</h1>
 
               <p className="text-slate-300 mt-4 max-w-2xl leading-relaxed">
                 Analyze resumes, detect skill gaps, generate interview questions,
@@ -268,15 +272,12 @@ function Dashboard() {
                 <div className="bg-white/10 backdrop-blur-lg px-5 py-3 rounded-xl border border-white/10 text-sm">
                   ATS Score: <b>{atsScore}%</b>
                 </div>
-
                 <div className="bg-white/10 backdrop-blur-lg px-5 py-3 rounded-xl border border-white/10 text-sm">
                   Skills: <b>{skillsFound.length}</b>
                 </div>
-
                 <div className="bg-white/10 backdrop-blur-lg px-5 py-3 rounded-xl border border-white/10 text-sm">
                   Jobs: <b>{recommendedJobs.length}</b>
                 </div>
-
                 <div className="bg-white/10 backdrop-blur-lg px-5 py-3 rounded-xl border border-white/10 text-sm">
                   Mock: <b>{mockQuestions.length}</b>
                 </div>
@@ -285,62 +286,17 @@ function Dashboard() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-6">
-            <StatCard
-              title="ATS Score"
-              value={`${atsScore}%`}
-              icon={<FaChartLine className="text-emerald-600 text-xl" />}
-              color="text-emerald-600"
-              bg="bg-emerald-50"
-            />
-
-            <StatCard
-              title="Skills Found"
-              value={skillsFound.length}
-              icon={<FaBrain className="text-blue-600 text-xl" />}
-              color="text-blue-600"
-              bg="bg-blue-50"
-            />
-
-            <StatCard
-              title="Questions"
-              value={interviewQuestions.length}
-              icon={<FaMicrophone className="text-purple-600 text-xl" />}
-              color="text-purple-600"
-              bg="bg-purple-50"
-            />
-
-            <StatCard
-              title="Mock Interview"
-              value={mockQuestions.length}
-              icon={<FaUserTie className="text-cyan-600 text-xl" />}
-              color="text-cyan-600"
-              bg="bg-cyan-50"
-            />
-
-            <StatCard
-              title="Roadmap Steps"
-              value={roadmap.length}
-              icon={<FaMapMarkedAlt className="text-orange-600 text-xl" />}
-              color="text-orange-600"
-              bg="bg-orange-50"
-            />
-
-            <StatCard
-              title="Jobs"
-              value={recommendedJobs.length}
-              icon={<FaBriefcase className="text-pink-600 text-xl" />}
-              color="text-pink-600"
-              bg="bg-pink-50"
-            />
+            <StatCard title="ATS Score" value={`${atsScore}%`} icon={<FaChartLine className="text-emerald-600 text-xl" />} color="text-emerald-600" bg="bg-emerald-50" />
+            <StatCard title="Skills Found" value={skillsFound.length} icon={<FaBrain className="text-blue-600 text-xl" />} color="text-blue-600" bg="bg-blue-50" />
+            <StatCard title="Questions" value={interviewQuestions.length} icon={<FaMicrophone className="text-purple-600 text-xl" />} color="text-purple-600" bg="bg-purple-50" />
+            <StatCard title="Mock Interview" value={mockQuestions.length} icon={<FaUserTie className="text-cyan-600 text-xl" />} color="text-cyan-600" bg="bg-cyan-50" />
+            <StatCard title="Roadmap Steps" value={roadmap.length} icon={<FaMapMarkedAlt className="text-orange-600 text-xl" />} color="text-orange-600" bg="bg-orange-50" />
+            <StatCard title="Jobs" value={recommendedJobs.length} icon={<FaBriefcase className="text-pink-600 text-xl" />} color="text-pink-600" bg="bg-pink-50" />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-            <Card>
-              <SectionTitle
-                icon={<FaFileAlt className="text-blue-600 text-xl" />}
-                title="Resume Analyzer"
-                subtitle="Upload your resume and generate ATS score with skill analysis."
-              />
+            <Card id="resume">
+              <SectionTitle icon={<FaFileAlt className="text-blue-600 text-xl" />} title="Resume Analyzer" subtitle="Upload your resume and generate ATS score with skill analysis." />
 
               <input
                 type="file"
@@ -357,12 +313,8 @@ function Dashboard() {
               </button>
             </Card>
 
-            <Card>
-              <SectionTitle
-                icon={<FaRobot className="text-emerald-600 text-xl" />}
-                title="AI Career Mentor"
-                subtitle="Ask career questions and get instant guidance."
-              />
+            <Card id="mentor">
+              <SectionTitle icon={<FaRobot className="text-emerald-600 text-xl" />} title="AI Career Mentor" subtitle="Ask career questions and get instant guidance." />
 
               <input
                 type="text"
@@ -388,12 +340,8 @@ function Dashboard() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-            <Card>
-              <SectionTitle
-                icon={<FaChartLine className="text-emerald-600 text-xl" />}
-                title="Resume Analysis Result"
-                subtitle="View your ATS score, detected skills and missing skills."
-              />
+            <Card id="skills">
+              <SectionTitle icon={<FaChartLine className="text-emerald-600 text-xl" />} title="Resume Analysis Result" subtitle="View your ATS score, detected skills and missing skills." />
 
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-5">
                 <p className="text-sm text-slate-500">ATS Score</p>
@@ -402,9 +350,7 @@ function Dashboard() {
                 </h3>
               </div>
 
-              <h3 className="font-semibold text-emerald-700 mb-3">
-                Skills Found
-              </h3>
+              <h3 className="font-semibold text-emerald-700 mb-3">Skills Found</h3>
 
               <div className="flex flex-wrap gap-2 mb-5">
                 {skillsFound.map((skill, index) => (
@@ -417,9 +363,7 @@ function Dashboard() {
                 ))}
               </div>
 
-              <h3 className="font-semibold text-red-700 mb-3">
-                Missing Skills
-              </h3>
+              <h3 className="font-semibold text-red-700 mb-3">Missing Skills</h3>
 
               <div className="flex flex-wrap gap-2">
                 {missingSkills.map((skill, index) => (
@@ -433,12 +377,8 @@ function Dashboard() {
               </div>
             </Card>
 
-            <Card>
-              <SectionTitle
-                icon={<FaMicrophone className="text-purple-600 text-xl" />}
-                title="Interview Question Generator"
-                subtitle="Generate technical questions based on detected skills."
-              />
+            <Card id="interview">
+              <SectionTitle icon={<FaMicrophone className="text-purple-600 text-xl" />} title="Interview Question Generator" subtitle="Generate technical questions based on detected skills." />
 
               <button
                 onClick={handleGenerateQuestions}
@@ -461,12 +401,8 @@ function Dashboard() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-            <Card>
-              <SectionTitle
-                icon={<FaUserTie className="text-cyan-600 text-xl" />}
-                title="Mock Interview"
-                subtitle="Practice interview questions generated from your resume skills."
-              />
+            <Card id="mock">
+              <SectionTitle icon={<FaUserTie className="text-cyan-600 text-xl" />} title="Mock Interview" subtitle="Practice interview questions generated from your resume skills." />
 
               <button
                 onClick={handleGenerateMockInterview}
@@ -493,12 +429,8 @@ function Dashboard() {
               </div>
             </Card>
 
-            <Card>
-              <SectionTitle
-                icon={<FaBriefcase className="text-pink-600 text-xl" />}
-                title="Job Recommendation"
-                subtitle="Recommend suitable roles based on resume skills."
-              />
+            <Card id="jobs">
+              <SectionTitle icon={<FaBriefcase className="text-pink-600 text-xl" />} title="Job Recommendation" subtitle="Recommend suitable roles based on resume skills." />
 
               <button
                 onClick={handleRecommendJobs}
@@ -521,12 +453,8 @@ function Dashboard() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-            <Card>
-              <SectionTitle
-                icon={<FaMapMarkedAlt className="text-orange-600 text-xl" />}
-                title="Roadmap Generator"
-                subtitle="Generate a career roadmap based on your goal."
-              />
+            <Card id="roadmap">
+              <SectionTitle icon={<FaMapMarkedAlt className="text-orange-600 text-xl" />} title="Roadmap Generator" subtitle="Generate a career roadmap based on your goal." />
 
               <input
                 type="text"
@@ -555,7 +483,10 @@ function Dashboard() {
               </ul>
             </Card>
 
-            <div className="bg-slate-900 rounded-2xl p-8 text-white shadow-xl border border-slate-800">
+            <div
+              id="report"
+              className="bg-slate-900 rounded-2xl p-8 text-white shadow-xl border border-slate-800 scroll-mt-28"
+            >
               <div className="flex items-center gap-3">
                 <FaDownload className="text-cyan-400 text-2xl" />
                 <h2 className="text-2xl font-bold">Career Report</h2>

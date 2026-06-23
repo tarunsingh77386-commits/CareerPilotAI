@@ -15,7 +15,7 @@ function Navbar() {
       <div className="flex items-center gap-5">
         <div className="text-right">
           <p className="font-semibold text-gray-800">
-            Tarun Kumar 👋
+          {localStorage.getItem("name") || "User"} 👋
           </p>
 
           <p className="text-xs text-gray-500">

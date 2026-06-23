@@ -6,28 +6,31 @@ function Register() {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
+  const [course, setCourse] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
+    if (!name.trim() || !course.trim() || !email.trim() || !password.trim()) {
+      alert("Please fill all fields");
+      return;
+    }
+
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/register",
+      await axios.post(
+        "https://careerpilot-backend-vax2.onrender.com/api/auth/register",
         {
           name,
+          course,
           email,
           password,
         }
       );
 
       alert("Account Created Successfully 🚀");
-
       navigate("/");
     } catch (error) {
-      alert(
-        error.response?.data?.message ||
-        "Registration Failed"
-      );
+      alert(error.response?.data?.message || "Registration Failed");
     }
   };
 
@@ -48,6 +51,14 @@ function Register() {
           className="w-full border p-3 rounded-lg mb-4"
           value={name}
           onChange={(e) => setName(e.target.value)}
+        />
+
+        <input
+          type="text"
+          placeholder="Course e.g. MCA, BCA, B.Tech"
+          className="w-full border p-3 rounded-lg mb-4"
+          value={course}
+          onChange={(e) => setCourse(e.target.value)}
         />
 
         <input
