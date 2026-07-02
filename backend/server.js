@@ -17,9 +17,7 @@ const app = express();
 // Database Connection
 connectDB();
 
-// =======================
 // Middleware
-// =======================
 app.use(
   cors({
     origin: [
@@ -27,24 +25,19 @@ app.use(
       "https://careerpilot-aiv1.netlify.app",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
-app.options("*", cors());
-
 app.use(express.json());
 
-// =======================
 // Home Route
-// =======================
 app.get("/", (req, res) => {
   res.send("CareerPilot AI Backend Running 🚀");
 });
 
-// =======================
 // Routes
-// =======================
 app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
 app.use("/api/mentor", mentorRoutes);
@@ -53,9 +46,6 @@ app.use("/api/roadmap", roadmapRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/mock", mockRoutes);
 
-// =======================
-// Start Server
-// =======================
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
